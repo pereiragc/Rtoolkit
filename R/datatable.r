@@ -7,12 +7,7 @@ setkey(DT, categ, val)
 
 ## ** Functions
 
-dt_aggregateby <- function(DT, numerical.var, by.vars=NULL, aggr.fun) {
-  DT[, {
-    quantiles <- aggr.fun(get(numerical.var))
-    list(quantiles=quantiles)
-  },by.vars]
-}
+
 
 dt_quantilebins_generic <- function(DT, numerical.var, weight.var, by.vars=NULL, outvarnames,
                                     wt.quantile.fun, ...) {
@@ -35,12 +30,14 @@ dt_quantilebins_generic <- function(DT, numerical.var, weight.var, by.vars=NULL,
 }
 
 
-## Uses Hmisc::wtd.quantile to compute weighted quantiles.
-##
-## Use ntile=2 for median split; ntile=3 for terciles, ntile=4 for quartiles,
-## etc.
-##
-## the `...` are passed to the `cut` function.
+##' Compute weighted quantiles
+##'
+##' Uses Hmisc::wtd.quantile to compute weighted quantiles.
+##'
+##' Use ntile=2 for median split; ntile=3 for terciles, ntile=4 for quartiles,
+##' etc.
+##'
+##' the `...` are passed to the `cut` function.
 dt_quantilebins_weighted <- function(DT, numerical.var, wt.var, by.vars=NULL, ntile=5, outvarnames=c("bin", "bin_n"),
                                      bounds=c(-Inf, Inf), ...) {
 
