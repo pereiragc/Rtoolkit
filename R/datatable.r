@@ -1,19 +1,28 @@
-library(data.table)
-
-
-
+library(devtools)
+use_package("data.table")
+use_package("Hmisc")
 
 setkey(DT, categ, val)
 
 ## ** Functions
 
-
-
+##' Generic function for quantile binning
+##'
+##' Creates quantiles of variable `numerical.var` (supplied as a single string)
+##' using weights given by `weight.var`. 
+##'
+##' @title Generic quantile binning
+##' @param DT Data table to be summarized
+##' @param numerical.var [str(1)] which variable will be quantilized
+##' @param weight.var [num] weights with which quantiles are constructed
+##' @param by.vars [str(n)] vector of variables by which
+##' @param outvarnames not implemented yet: control return names
+##' @param wt.quantile.fun [function] f(x,w) where x and w have equal length
+##' @param ... extra arguments to `cut`
+##' @return
+##' @author Gustavo
 dt_quantilebins_generic <- function(DT, numerical.var, weight.var, by.vars=NULL, outvarnames,
                                     wt.quantile.fun, ...) {
-  # NOTE:  `...` are arguments to the cut function
-
-  origkey <- key(DT)
   r <- DT[, {
     quantiles <- wt.quantile.fun(get(numerical.var), get(weight.var))
     # quantiles <- wt.quantile.fun(get(numerical.var))
@@ -24,20 +33,36 @@ dt_quantilebins_generic <- function(DT, numerical.var, weight.var, by.vars=NULL,
     ll
   },by.vars]
 
-    setkey(r, orig_pos)
+  setkey(r, orig_pos)
+  r[, orig_pos := NULL]
 
   return(r)
 }
 
 
-##' Compute weighted quantiles
+##'  Compute weighted quantiles of a data.table `DT`
 ##'
-##' Uses Hmisc::wtd.quantile to compute weighted quantiles.
+##'  Apply `dt_quantilebins_generic` with Hmisc's `wtd.quantile` to find
+##'  weighted quantiles. The number of percentiles is governed by `ntile`: with
+##'  `ntile=5`, the function computes quintiles, with `ntile=4` quartiles,and so
+##'  on.
 ##'
-##' Use ntile=2 for median split; ntile=3 for terciles, ntile=4 for quartiles,
-##' etc.
+##' The `...` are passed to the `cut` function. Note that `ordered_result=TRUE`
+##' necessarily (i.e., it's not an option).
 ##'
-##' the `...` are passed to the `cut` function.
+##'
+##' @title
+##' @param DT [data.table] data
+##' @param numerical.var [str(1)] variable to be quantilized
+##' @param wt.var [str(1)] variable to be used as weight
+##' @param by.vars [str(n)] variable to subset by when computing quantiles
+##' @param ntile [int] number of quantiles
+##' @param outvarnames to be implemented
+##' @param bounds [num(2)] natural bounds for `numerical.var` (for pretty printing)
+##' @param ... extra arguments to the `cut` function
+##' @return
+##' @author Gustavo
+##' @export
 dt_quantilebins_weighted <- function(DT, numerical.var, wt.var, by.vars=NULL, ntile=5, outvarnames=c("bin", "bin_n"),
                                      bounds=c(-Inf, Inf), ...) {
 
