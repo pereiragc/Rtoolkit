@@ -2,3 +2,6 @@
 
 export(dt_quantilebins_weighted)
 export(set_group)
+export(tab)
+export(wtd.tab)
+export(wtd.tab.flat)

@@ -105,3 +105,93 @@ set_group <- function(DT, col_group, group_list, groupvarname = NULL, ...) {
 
   DT[dict, (groupvarname) := groupname, on=col_group]
 }
+
+#' @export
+tab <- function(DT, cols_tab, cols_subs=NULL, percent=TRUE) {
+  mm <- ifelse(percent, 100, 1)
+
+  tot <- DT[, .N]
+
+  # All the necessary computation is done here...
+  res <- DT[, .(`Number of occurrences` = .N), c(cols_tab, cols_subs)]
+  res[, `Proportion of total` := mm*`Number of occurrences`/ tot]
+  res[, `Proportion in group` := mm*`Number of occurrences`/ sum(`Number of occurrences`), cols_subs]
+  # ... the rest is just taking this results and outputting them
+
+  subs_gr <- unique(res[, cols_subs, cols_subs, with=FALSE]) # Find unique subsetting groups
+
+  data.table::setkeyv(res, cols_subs)
+  data.table::setkeyv(subs_gr, cols_subs)
+
+  ## Loop over subsetting groups
+  if (nrow(subs_gr) == 0) {
+    return(list(list(
+      group_name = "Full sample",
+      tab = res[order(get(cols_tab))]
+    )))
+  }
+
+  subs_names <- names(subs_gr) # Keep subsetting group names
+  lapply(1:nrow(subs_gr),
+         function(i) {
+           ## For subset group `i`, lookup values in `res`
+           this_gr <- subs_gr[i]
+           tab <- this_gr[res, nomatch=0]
+           group_vals <- paste(subs_names, unlist(this_gr), sep=" = ")
+
+           data.table::setkeyv(tab, cols_tab)
+
+           list(
+             group_name = paste(group_vals, collapse=", "),
+             tab = tab[order(get(cols_tab))]
+           )
+         })
+}
+
+#' @export
+wtd.tab.flat <- function(DT, cols_tab, col_wt, cols_subs=NULL, percent=TRUE) {
+  data.table::rbindlist(lapply(wtd.tab(DT, cols_tab, col_wt, cols_subs, percent),
+                   function(l_subs) l_subs$tab))
+}
+
+#' @export
+wtd.tab <- function(DT, cols_tab, col_wt="one", cols_subs=NULL, percent=TRUE) {
+  mm <- ifelse(percent, 100, 1)
+
+  tot <- DT[, sum(get(col_wt))]
+
+  # All the necessary computation is done here...
+  res <- DT[, .(`Number of occurrences` = sum(get(col_wt))), c(cols_tab, cols_subs)]
+  res[, `Proportion of total` := mm*`Number of occurrences`/ tot]
+  res[, `Proportion in group` := mm*`Number of occurrences`/ sum(`Number of occurrences`), cols_subs]
+  # ... the rest is just taking this results and outputting them
+
+  subs_gr <- unique(res[, cols_subs, cols_subs, with=FALSE]) # Find unique subsetting groups
+
+  setkeyv(res, cols_subs)
+  setkeyv(subs_gr, cols_subs)
+
+  ## Loop over subsetting groups
+  if (nrow(subs_gr) == 0) {
+    return(list(list(
+      group_name = "Full sample",
+      tab = res[order(get(cols_tab))]
+    )))
+  }
+
+  subs_names <- names(subs_gr) # Keep subsetting group names
+  lapply(1:nrow(subs_gr),
+         function(i) {
+           ## For subset group `i`, lookup values in `res`
+           this_gr <- subs_gr[i]
+           tab <- this_gr[res, nomatch=0]
+           group_vals <- paste(subs_names, unlist(this_gr), sep=" = ")
+
+           setkeyv(tab, cols_tab)
+
+           list(
+             group_name = paste(group_vals, collapse=", "),
+             tab = tab[order(get(cols_tab))]
+           )
+         })
+}
