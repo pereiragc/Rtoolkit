@@ -2,15 +2,6 @@ library(data.table)
 
 
 
-## * Summarize by category
-
-## Create a minimal working example
-set.seed(123)
-DT <- data.table(
-  categ = factor(sample(letters[1:2], 20, replace=TRUE)),
-  val = rnorm(20),
-  w = 1
-)
 
 setkey(DT, categ, val)
 
@@ -63,4 +54,3 @@ dt_quantilebins_weighted <- function(DT, numerical.var, wt.var, by.vars=NULL, nt
   dt_quantilebins_generic(DT, numerical.var, wt.var, by.vars, outvarnames, quantile.fun, ...)
 }
 
-DT2 <- dt_quantilebins_weighted(DT, "val", "w", "categ", 2)

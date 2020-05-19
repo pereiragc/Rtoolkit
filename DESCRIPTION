@@ -1,0 +1,15 @@
+Package: dttoolkit
+Title: Data analysis with data.table
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Gustavo",
+           family = "Pereira",
+           role = c("aut", "cre"),
+           email = "gustavo.alt1@gmail.com")
+Description: A compilation of abstraction that I find useful for dealing with data.table
+License: `use_mit_license()`, `use_gpl3_license()` or friends to
+    pick a license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
