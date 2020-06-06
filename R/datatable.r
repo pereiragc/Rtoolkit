@@ -195,3 +195,24 @@ wtd.tab <- function(DT, cols_tab, col_wt="one", cols_subs=NULL, percent=TRUE) {
            )
          })
 }
+
+
+column.names.verify <- function(list.DT){
+  ## Inputs:
+  ##   list.DT       :: (list)       :: list with data tables
+  ## Outputs:
+  ##   name.analysis :: (data.table) :: data table with output of column name analysis
+
+
+  list.names  <- sapply(list.DT, colnames)
+  maximal.name  <- Reduce(union, list.names)
+
+
+  name.analysis  <- data.table(
+    colname = maximal.name
+  )
+
+  in.maximal  <- as.data.table(lapply(list.DT,
+                                      function(DT) colnames(DT) %in% maximal.name))
+  name.analysis  <- cbind(name.analysis, in.maximal)
+}
