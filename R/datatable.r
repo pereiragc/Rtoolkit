@@ -197,7 +197,7 @@ wtd.tab <- function(DT, cols_tab, col_wt="one", cols_subs=NULL, percent=TRUE) {
 }
 
 
-column.names.verify <- function(list.DT){
+colnames_verify <- function(list.DT){
   ## Inputs:
   ##   list.DT       :: (list)       :: list with data tables
   ## Outputs:
