@@ -212,7 +212,7 @@ colnames_verify <- function(list.DT){
     colname = maximal.name
   )
 
-  in.maximal  <- as.data.table(lapply(list.DT,
-                                      function(DT) colnames(DT) %in% maximal.name))
+  in.maximal  <- lapply(list.DT, function(DT) colnames(DT) %in% maximal.name)
+  setDT(in.maximal)
   name.analysis  <- cbind(name.analysis, in.maximal)
 }
