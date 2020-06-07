@@ -1,4 +1,4 @@
-library(devtools)
+## library(devtools)
 use_package("data.table")
 use_package("Hmisc")
 
