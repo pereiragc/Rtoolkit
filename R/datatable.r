@@ -1,6 +1,8 @@
 ## library(devtools)
-use_package("data.table")
-use_package("Hmisc")
+# use_package("data.table")
+# use_package("Hmisc")
+library(Hmisc)
+library(data.table)
 
 ## ** Functions
 
