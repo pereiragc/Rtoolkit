@@ -78,35 +78,6 @@ dt_quantilebins_weighted <- function(DT, numerical.var, wt.var, by.vars=NULL, nt
 
 
 #' @export
-set_group <- function(DT, col_group, group_list, groupvarname = NULL, ...) {
-  ## Format of `group_list`:
-  ## list(
-  ##   group1 = c("g1_level1", "g1_level2", ...)
-  ##   group2 = c("g2_level1", "g2_level2", ...)
-  ## )
-
-  ## Ellipsis are passed to the factor command
-
-
-  ## Create dictionary:
-  dict <- data.table::rbindlist(lapply(names(group_list), function(gname) {
-    data.table(groupname = gname,
-               vals = group_list[[gname]])
-  }))
-  # dict[, levels := factor(levels, levels=levels, ...)]
-  dict[, groupname := factor(groupname, levels=unique(groupname))]
-
-
-
-  if (is.null(groupvarname)) {
-    groupvarname <- paste(col_group, "group", sep="_")
-  }
-
-  # setnames(dict, c("groupname", "vals"), c(groupvarname, col_group))
-  data.table::setnames(dict, c("vals"), c(col_group))
-
-  DT[dict, (groupvarname) := groupname, on=col_group]
-}
 
 #' @export
 tab <- function(DT, cols_tab, cols_subs=NULL, percent=TRUE) {
