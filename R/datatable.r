@@ -3,6 +3,7 @@
 # use_package("Hmisc")
 library(Hmisc)
 library(data.table)
+library(plyr)
 
 ## ** Functions
 
@@ -220,4 +221,12 @@ setGroup <- function(DT, col_group, group_list, groupvarname = NULL, ...) {
   setnames(dict, c("vals"), c(col_group))
 
   DT[dict, (groupvarname) := groupname, on=col_group]
+}
+
+
+
+changeLabels <- function(DT, vname, old, new) {
+   fac <- DT[, get(vname)]
+   vnew <- mapvalues(fac, from=old, to=new)
+   DT[, (vname) := vnew]
 }
