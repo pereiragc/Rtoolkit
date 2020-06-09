@@ -225,7 +225,7 @@ setGroup <- function(DT, col_group, group_list, groupvarname = NULL, ...) {
 
 
 
-changeLabels <- function(DT, vname, old, new) {
+changeLevels <- function(DT, vname, old, new) {
    fac <- DT[, get(vname)]
    vnew <- mapvalues(fac, from=old, to=new)
    DT[, (vname) := vnew]
