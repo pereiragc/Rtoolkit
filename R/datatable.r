@@ -175,30 +175,33 @@ colnames_verify <- function(list.DT){
   ## Inputs:
   ##   list.DT       :: (list)       :: list with data tables
   ## Outputs:
-  ##   name.analysis :: (data.table) :: data table with output of column name analysis
+  ##   name_analysis :: (data.table) :: data table with output of column name
+  ##                                    analysis
 
 
-  list.names  <- sapply(list.DT, colnames)
-  maximal.name  <- Reduce(union, list.names)
+  list_names  <- sapply(list.DT, colnames)
+  maximal_name  <- Reduce(union, list_names)
 
 
-  name.analysis  <- data.table(
-    colname = maximal.name
+  name_analysis  <- data.table(
+    colname = maximal_name
   )
 
-  in.maximal  <- lapply(list.DT, function(DT) colnames(DT) %in% maximal.name)
-  setDT(in.maximal)
-  name.analysis  <- cbind(name.analysis, in.maximal)
+  in_maximal  <- lapply(list.DT, function(DT) colnames(DT) %in% maximal_name)
+  setDT(in_maximal)
+  name_analysis  <- cbind(name_analysis, in_maximal)
 }
 
 
 
 setGroup <- function(DT, col_group, group_list, groupvarname = NULL, ...) {
   ## Format of `group_list`:
+  ## ```{R}
   ## list(
   ##   group1 = c("g1_level1", "g1_level2", ...)
   ##   group2 = c("g2_level1", "g2_level2", ...)
   ## )
+  ## ```
 
   ## Ellipsis are passed to the factor command
 
@@ -208,8 +211,7 @@ setGroup <- function(DT, col_group, group_list, groupvarname = NULL, ...) {
     data.table(groupname = gname,
                vals = group_list[[gname]])
   }))
-  # dict[, levels := factor(levels, levels=levels, ...)]
-  dict[, groupname := factor(groupname, levels=unique(groupname))]
+  dict[, groupname := factor(groupname, levels = unique(groupname))]
 
 
 
@@ -217,7 +219,6 @@ setGroup <- function(DT, col_group, group_list, groupvarname = NULL, ...) {
     groupvarname <- paste(col_group, "group", sep="_")
   }
 
-  # setnames(dict, c("groupname", "vals"), c(groupvarname, col_group))
   setnames(dict, c("vals"), c(col_group))
 
   DT[dict, (groupvarname) := groupname, on=col_group]
