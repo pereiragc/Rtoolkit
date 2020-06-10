@@ -230,3 +230,8 @@ changeLevels <- function(DT, vname, old, new) {
    vnew <- mapvalues(fac, from=old, to=new)
    DT[, (vname) := vnew]
 }
+
+
+unitSample <- function(DT, unit_col, N) {
+  sample(DT[, unique(get(unit_col))], N)
+}
