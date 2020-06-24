@@ -65,13 +65,14 @@ dt_quantilebins_generic <- function(DT, numerical.var, weight.var, by.vars=NULL,
 ##' @author Gustavo
 ##' @export
 dt_quantilebins_weighted <- function(DT, numerical.var, wt.var, by.vars=NULL, ntile=5, outvarnames=c("bin", "bin_n"),
+                                     scale = 1,
                                      bounds=c(-Inf, Inf), ...) {
 
   prob_range <- seq(0, 1, by=1/ntile)
   bin_define <- prob_range[-c(1, length(prob_range))]
 
   quantile.fun <- function(x,w) {
-    c(bounds[1], Hmisc::wtd.quantile(x, weights=w, bin_define), bounds[2])
+    c(bounds[1], Hmisc::wtd.quantile(x*scale, weights=w, bin_define), bounds[2])
   }
 
   dt_quantilebins_generic(DT, numerical.var, wt.var, by.vars, outvarnames, quantile.fun, ...)
