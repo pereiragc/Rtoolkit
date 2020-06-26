@@ -23,12 +23,13 @@ library(plyr)
 ##' @return
 ##' @author Gustavo
 dt_quantilebins_generic <- function(DT, numerical.var, weight.var, by.vars=NULL, outvarnames,
-                                    wt.quantile.fun, ...) {
+                                    wt.quantile.fun, scale, ...) {
   r <- DT[, {
-    quantiles <- wt.quantile.fun(get(numerical.var), get(weight.var))
+    scaled_x <- get(numerical.var)*scale
+    quantiles <- wt.quantile.fun(scaled_x, get(weight.var))
     # quantiles <- wt.quantile.fun(get(numerical.var))
-    bin_label <- cut(get(numerical.var), breaks=quantiles, ordered_result = TRUE, ...)
-    ll <- list(tmpvarname__ = get(numerical.var), bin_label=as.character(bin_label),
+    bin_label <- cut(scaled_x, breaks=quantiles, ordered_result = TRUE, ...)
+    ll <- list(tmpvarname__ = scaled_x, bin_label=as.character(bin_label),
          bin_n=as.integer(bin_label), orig_pos=.I)
     names(ll)[1] <- numerical.var
     ll
@@ -72,10 +73,10 @@ dt_quantilebins_weighted <- function(DT, numerical.var, wt.var, by.vars=NULL, nt
   bin_define <- prob_range[-c(1, length(prob_range))]
 
   quantile.fun <- function(x,w) {
-    c(bounds[1], Hmisc::wtd.quantile(x*scale, weights=w, bin_define), bounds[2])
+    c(bounds[1], Hmisc::wtd.quantile(x, weights=w, bin_define), bounds[2])
   }
 
-  dt_quantilebins_generic(DT, numerical.var, wt.var, by.vars, outvarnames, quantile.fun, ...)
+  dt_quantilebins_generic(DT, numerical.var, wt.var, by.vars, outvarnames, quantile.fun, scale, ...)
 }
 
 
