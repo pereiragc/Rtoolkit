@@ -137,7 +137,8 @@ wtd.tab <- function(DT, cols_tab, col_wt="one", cols_subs=NULL, percent=TRUE) {
   tot <- DT[, sum(get(col_wt))]
 
   # All the necessary computation is done here...
-  res <- DT[, .(`Number of occurrences` = sum(get(col_wt))), c(cols_tab, cols_subs)]
+  res <- DT[, .(`Number of occurrences` = sum(get(col_wt)),
+                `Effective Obs` = .N), c(cols_tab, cols_subs)]
   res[, `Proportion of total` := mm*`Number of occurrences`/ tot]
   res[, `Proportion in group` := mm*`Number of occurrences`/ sum(`Number of occurrences`), cols_subs]
   # ... the rest is just taking this results and outputting them
